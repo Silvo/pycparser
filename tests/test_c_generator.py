@@ -96,6 +96,16 @@ class TestCtoC(unittest.TestCase):
                 (a == 0) ? (b = 1) : (b = 2);
             }''')
 
+    def test_asm(self):
+        self._assert_ctoc_correct(r'''
+            int main(void)
+            {
+                asm("mov x, y");
+                asm volatile ("nop");
+                asm("add x, x, #1\n"
+                    "mov y, x\n");
+            }''')
+
     def test_casts(self):
         self._assert_ctoc_correct(r'''
             int main() {

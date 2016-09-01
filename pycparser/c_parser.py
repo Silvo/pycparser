@@ -605,8 +605,18 @@ class CParser(PLYParser):
                         | iteration_statement
                         | jump_statement
                         | pppragma_directive
+                        | asm_statement
         """
         p[0] = p[1]
+
+    def p_asm_statement(self, p):
+        """ asm_statement : ASM LPAREN unified_string_literal RPAREN SEMI
+                          | ASM VOLATILE LPAREN unified_string_literal RPAREN SEMI
+        """
+        if len(p) == 6:
+            p[0] = c_ast.Asm(None, p[3], self._coord(p.lineno(1)))
+        else:
+            p[0] = c_ast.Asm(p[2], p[4], self._coord(p.lineno(1)))
 
     # In C, declarations can come several in a line:
     #   int x, *px, romulo = 5;

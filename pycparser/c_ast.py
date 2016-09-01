@@ -158,6 +158,20 @@ class ArrayRef(Node):
 
     attr_names = ()
 
+class Asm(Node):
+    __slots__ = ('quals', 'string', 'coord', '__weakref__')
+    def __init__(self, quals, string, coord=None):
+        self.quals = quals
+        self.string = string
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.string is not None: nodelist.append(("string", self.string))
+        return tuple(nodelist)
+
+    attr_names = ('quals',)
+
 class Assignment(Node):
     __slots__ = ('op', 'lvalue', 'rvalue', 'coord', '__weakref__')
     def __init__(self, op, lvalue, rvalue, coord=None):

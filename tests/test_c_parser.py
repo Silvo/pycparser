@@ -1337,6 +1337,31 @@ class TestCParser_fundamentals(TestCParser_base):
         self.assertEqual(s1_ast.ext[1].body.block_items[2].string, '')
         self.assertEqual(s1_ast.ext[1].body.block_items[2].coord.line, 6)
 
+    def test_asm(self):
+        ps1 = self.parse(r'''
+                    int main() {
+                        asm("nop");
+
+                        asm("add x, x, #1\n"
+                            "mov y, x\n");
+
+                        asm volatile("nop");
+                    }
+                    ''')
+        self.assertTrue(isinstance(ps1.ext[0].body.block_items[0], Asm))
+        self.assertEqual(ps1.ext[0].body.block_items[0].quals, None)
+        self.assertEqual(ps1.ext[0].body.block_items[0].string.value, '"nop"')
+        self.assertEqual(ps1.ext[0].body.block_items[0].coord.line, 3)
+
+        self.assertTrue(isinstance(ps1.ext[0].body.block_items[1], Asm))
+        self.assertEqual(ps1.ext[0].body.block_items[1].quals, None)
+        self.assertEqual(ps1.ext[0].body.block_items[1].string.value, r'"add x, x, #1\nmov y, x\n"')
+        self.assertEqual(ps1.ext[0].body.block_items[1].coord.line, 5)
+
+        self.assertTrue(isinstance(ps1.ext[0].body.block_items[2], Asm))
+        self.assertEqual(ps1.ext[0].body.block_items[2].quals, 'volatile')
+        self.assertEqual(ps1.ext[0].body.block_items[2].string.value, '"nop"')
+        self.assertEqual(ps1.ext[0].body.block_items[2].coord.line, 8)
 
 class TestCParser_whole_code(TestCParser_base):
     """ Testing of parsing whole chunks of code.

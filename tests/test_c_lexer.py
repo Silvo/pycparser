@@ -244,6 +244,10 @@ class TestCLexerNoErrors(unittest.TestCase):
                         'ID', 'EQUALS', 'INT_CONST_DEC', 'SEMI',
                 'RBRACE'])
 
+        self.assertTokensTypes(
+            'asm("nop")', ['ASM', 'LPAREN', 'STRING_LITERAL', 'RPAREN']
+        )
+
     def test_preprocessor_line(self):
         self.assertTokensTypes('#abracadabra', ['PPHASH', 'ID'])
 

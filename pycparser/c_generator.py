@@ -78,6 +78,12 @@ class CGenerator(object):
                             lambda d: not self._is_simple_node(d))
         return '%s %s %s' % (lval_str, n.op, rval_str)
 
+    def visit_Asm(self, n):
+        if n.quals:
+            return 'asm %s (%s);' % (n.quals, self.visit(n.string))
+        else:
+            return 'asm(%s);' % (self.visit(n.string))
+
     def visit_Assignment(self, n):
         rval_str = self._parenthesize_if(
                             n.rvalue,
